@@ -139,5 +139,127 @@
             </li>
         </ul>
     </main>
+    <script>
+    (function() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var colors = ['#bd2024', '#002FA7', '#FFCC00', '#FF8C00', isDark ? '#e0e0e0' : '#1a1a1a'];
+        var items = document.querySelectorAll('li');
+        var ul = document.querySelector('ul');
+        var main = document.querySelector('main');
+
+        // Hide items initially
+        items.forEach(function(li) {
+            li.style.borderColor = 'transparent';
+            li.style.opacity = '0';
+        });
+
+        // Create floating bar elements
+        var bars = [];
+        var circleRadius = 30;
+        var barHeight = 40;
+        var mainRect = main.getBoundingClientRect();
+        var h1 = document.querySelector('h1');
+        var h1Rect = h1.getBoundingClientRect();
+        var range = document.createRange();
+        range.selectNodeContents(h1);
+        var textRect = range.getBoundingClientRect();
+        var cx = textRect.left + (textRect.width / 2) - mainRect.left;
+        var cy = h1Rect.bottom + 40 - mainRect.top;
+
+        main.style.position = 'relative';
+
+        colors.forEach(function(color, i) {
+            var bar = document.createElement('div');
+            bar.style.position = 'absolute';
+            bar.style.width = '3px';
+            bar.style.height = barHeight + 'px';
+            bar.style.background = color;
+            bar.style.borderRadius = '1.5px';
+            bar.style.transformOrigin = 'center center';
+            bar.style.transition = 'none';
+            bar.style.zIndex = '10';
+            main.appendChild(bar);
+            bars.push(bar);
+        });
+
+        // Animate spinning in a circle
+        var startTime = performance.now();
+        var spinDuration = 1800;
+        var settling = false;
+
+        var barAngles = [];
+
+        function positionInCircle(time) {
+            var elapsed = time - startTime;
+            var angle = (elapsed / spinDuration) * Math.PI * 4; // 2 full rotations
+            bars.forEach(function(bar, i) {
+                var a = angle + (i * 2 * Math.PI / bars.length);
+                var x = cx + Math.cos(a) * circleRadius;
+                var y = cy + Math.sin(a) * circleRadius;
+                bar.style.left = x + 'px';
+                bar.style.top = y + 'px';
+                var rot = a + Math.PI / 2;
+                bar.style.transform = 'rotate(' + rot + 'rad)';
+                barAngles[i] = rot;
+            });
+        }
+
+        function spinLoop(time) {
+            if (settling) return;
+            positionInCircle(time);
+            if (time - startTime < spinDuration) {
+                requestAnimationFrame(spinLoop);
+            } else {
+                unfurl();
+            }
+        }
+
+        function unfurl() {
+            settling = true;
+            bars.forEach(function(bar, i) {
+                var li = items[i];
+                var liRect = li.getBoundingClientRect();
+                var mainRect = main.getBoundingClientRect();
+                var targetX = liRect.left - mainRect.left - 1;
+                var targetY = liRect.top - mainRect.top;
+                var targetH = liRect.height;
+
+                // Find nearest multiple of 2π to current angle so rotation to it is minimal
+                var cur = barAngles[i] || 0;
+                var twoPi = Math.PI * 2;
+                var target = Math.round(cur / twoPi) * twoPi;
+
+                bar.style.borderRadius = '0';
+                bar.style.transition = 'left 0.6s cubic-bezier(0.23, 1, 0.32, 1), top 0.6s cubic-bezier(0.23, 1, 0.32, 1), height 0.6s cubic-bezier(0.23, 1, 0.32, 1), transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+                bar.style.transitionDelay = (i * 0.07) + 's';
+
+                requestAnimationFrame(function() {
+                    bar.style.left = targetX + 'px';
+                    bar.style.top = targetY + 'px';
+                    bar.style.height = targetH + 'px';
+                    bar.style.transform = 'rotate(' + target + 'rad)';
+                });
+            });
+
+            // Fade in text and swap to real borders
+            setTimeout(function() {
+                items.forEach(function(li, i) {
+                    li.style.transition = 'opacity 0.4s ease';
+                    li.style.opacity = '1';
+                });
+                setTimeout(function() {
+                    items.forEach(function(li, i) {
+                        li.style.borderColor = '';
+                        li.style.transition = '';
+                    });
+                    bars.forEach(function(bar) { bar.remove(); });
+                }, 500);
+            }, 600 + (bars.length * 70));
+        }
+
+        requestAnimationFrame(spinLoop);
+    })();
+    </script>
 </body>
 </html>
