@@ -89,6 +89,28 @@
         .email a:hover {
             text-decoration: underline;
         }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #1a1a1a;
+                color: #e0e0e0;
+            }
+            li {
+                border-color: #4a4a4a;
+            }
+            li:nth-child(5) {
+                border-color: #e0e0e0;
+            }
+            .name a {
+                border-bottom-color: #4a4a4a;
+            }
+            .name a:hover {
+                border-bottom-color: #e0e0e0;
+            }
+            .email {
+                color: #999;
+            }
+        }
     </style>
 </head>
 <body>
