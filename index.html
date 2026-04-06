@@ -41,7 +41,7 @@
         }
 
         li {
-            border-left: 2px solid #d4d0ca;
+            border-left: 3px solid #d4d0ca;
             padding-left: 1rem;
         }
         li:first-child {
@@ -221,7 +221,7 @@
                 var li = items[i];
                 var liRect = li.getBoundingClientRect();
                 var mainRect = main.getBoundingClientRect();
-                var targetX = liRect.left - mainRect.left - 1;
+                var targetX = liRect.left - mainRect.left;
                 var targetY = liRect.top - mainRect.top;
                 var targetH = liRect.height;
 
