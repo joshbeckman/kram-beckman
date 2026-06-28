@@ -57,6 +57,9 @@
             border-color: #FF7900;
         }
         li:nth-child(5) {
+            border-color: #237F52;
+        }
+        li:nth-child(6) {
             border-color: #151515;
         }
 
@@ -98,7 +101,7 @@
             li {
                 border-color: #4a4a4a;
             }
-            li:nth-child(5) {
+            li:nth-child(6) {
                 border-color: #e0e0e0;
             }
             .name a {
@@ -134,6 +137,10 @@
                 <div class="email">figuring it out</div>
             </li>
             <li>
+                <div class="name">Ripley Kram-Beckman</div>
+                <div class="email">investigating</div>
+            </li>
+            <li>
                 <div class="name"><a href="https://bant.kram-beckman.com">Bant Kram-Beckman</a></div>
                 <div class="email">2011 - 2026</div>
             </li>
@@ -143,7 +150,7 @@
     (function() {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        var colors = ['#bd2024', '#002FA7', '#FFCC00', '#FF7900', isDark ? '#e0e0e0' : '#151515'];
+        var colors = ['#bd2024', '#002FA7', '#FFCC00', '#FF7900', '#237F52', isDark ? '#e0e0e0' : '#151515'];
         var items = document.querySelectorAll('li');
         var ul = document.querySelector('ul');
         var main = document.querySelector('main');
